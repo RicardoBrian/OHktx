@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OHktx — 개인용 KTX 취소표 알림/예매</title>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>OHktx</h1>
+    <button id="logoutBtn" class="ghost" hidden>로그아웃</button>
+  </header>
+
+  <section id="loginView" class="card">
+    <h2>로그인</h2>
+    <form id="loginForm">
+      <input type="password" id="loginPassword" placeholder="앱 비밀번호" required autocomplete="current-password" />
+      <button type="submit">로그인</button>
+    </form>
+    <p id="loginError" class="error" hidden></p>
+  </section>
+
+  <main id="mainView" hidden>
+    <section class="card">
+      <h2>설정</h2>
+      <div class="settings-grid">
+        <form id="korailForm" class="subcard">
+          <h3>코레일 계정</h3>
+          <p class="hint" id="korailStatus"></p>
+          <input type="text" id="korailId" placeholder="코레일 아이디(이메일/회원번호)" autocomplete="off" />
+          <input type="password" id="korailPw" placeholder="코레일 비밀번호" autocomplete="off" />
+          <button type="submit">저장</button>
+        </form>
+
+        <form id="paymentForm" class="subcard">
+          <h3>결제수단 (자동결제 사용 시 필요)</h3>
+          <p class="hint" id="paymentStatus"></p>
+          <input type="text" id="cardNumber" placeholder="카드번호 (숫자만)" autocomplete="off" />
+          <input type="text" id="cardExpiry" placeholder="유효기간 YYMM" maxlength="4" autocomplete="off" />
+          <input type="text" id="cardBirth" placeholder="생년월일(6자리) 또는 사업자번호" autocomplete="off" />
+          <input type="password" id="cardPassword" placeholder="카드 비밀번호 앞 2자리" maxlength="2" autocomplete="off" />
+          <button type="submit">저장</button>
+        </form>
+      </div>
+      <p class="hint">텔레그램 알림은 서버 <code>.env</code>의 TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID로 설정합니다.
+        현재 상태: <span id="telegramStatus">-</span></p>
+    </section>
+
+    <section class="card">
+      <h2>감시(watch) 추가</h2>
+      <form id="watchForm" class="watch-form">
+        <input type="text" id="depStation" placeholder="출발역 (예: 서울)" required />
+        <input type="text" id="arrStation" placeholder="도착역 (예: 부산)" required />
+        <input type="date" id="travelDate" required />
+        <label>시간대
+          <input type="time" id="timeFrom" value="00:00" />
+          ~
+          <input type="time" id="timeTo" value="23:59" />
+        </label>
+        <select id="trainType">
+          <option value="ktx">KTX만</option>
+          <option value="all">전체 열차</option>
+        </select>
+        <select id="seatType">
+          <option value="any">좌석 무관</option>
+          <option value="general">일반실</option>
+          <option value="first">특실</option>
+        </select>
+        <input type="number" id="passengerCount" value="1" min="1" max="9" />
+        <label class="checkbox">
+          <input type="checkbox" id="autoPay" />
+          캡차 없으면 자동결제까지 진행
+        </label>
+        <button type="submit">감시 시작</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>감시 목록</h2>
+      <table id="watchTable">
+        <thead>
+          <tr><th>구간</th><th>날짜/시간</th><th>옵션</th><th>상태</th><th>마지막 확인</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>알림/로그</h2>
+      <ul id="eventList" class="event-list"></ul>
+    </section>
+  </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
