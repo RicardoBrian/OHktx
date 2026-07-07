@@ -13,7 +13,14 @@ export class KorailClient {
     // 이 프로젝트가 설치한 playwright 버전과 실행 환경에 미리 설치된 크로미움 리비전이 다를 수 있어
     // PLAYWRIGHT_CHROMIUM_PATH가 있으면 그 경로를 우선 사용한다 (없으면 playwright가 알아서 찾음).
     const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
-    this.browser = await chromium.launch({ headless: this.headless, executablePath });
+    // 일부 VM/컨테이너 환경(특히 root로 실행 시)은 크로미움 샌드박스가 거부됨.
+    // 그런 경우에만 CHROMIUM_NO_SANDBOX=true로 우회한다 (일반 사용자로 실행하면 불필요).
+    const noSandbox = process.env.CHROMIUM_NO_SANDBOX === "true";
+    this.browser = await chromium.launch({
+      headless: this.headless,
+      executablePath,
+      args: noSandbox ? ["--no-sandbox"] : [],
+    });
     this.context = await this.browser.newContext({ locale: "ko-KR" });
     this.page = await this.context.newPage();
   }

@@ -1,0 +1,18 @@
+[Unit]
+Description=OHktx - 개인용 KTX 취소표 감시/예매 봇
+After=network.target
+
+[Service]
+Type=simple
+User=ohktx
+Group=ohktx
+WorkingDirectory=/opt/ohktx
+EnvironmentFile=/opt/ohktx/.env
+ExecStart=/usr/bin/node /opt/ohktx/dist/server.js
+Restart=always
+RestartSec=5
+# 브라우저 자동화 크래시가 서버 전체를 죽이지 않도록 별도 프로세스로만 재시작
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target
